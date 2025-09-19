@@ -1,12 +1,12 @@
 
 
-# AirbotGrasp
+# ACT-Edge
 
-AirbotGrasp is a customizable, automated grasping framework designed to be compatible with arbitrary vision-based detection and segmentation systems. Built upon the grasp pose generation methodology provided by GraspNet, AirbotGrasp offers a unified interface and an interactive graphical user interface (GUI) to facilitate rapid integration with diverse visual algorithms and application scenarios. 
+ACT-Edge is an engineering project specifically designed to deploy the embodied intelligence algorithm ACT onto edge devices (Horizon X5 RDK). 
 
-Furthermore, we introduce several engineering optimizations tailored to tabletop environments, including filtering of invalid grasp poses, point cloud scaling for small objects, trajectory planning and smoothing, and an emergency stop algorithm for robotic arms. And modified the PointNet++ CUDA code to make it compatible with PyTorch 2.0 and later versions.
+The project is developed within the ROS 2 (C++) framework and implemented as a ROS 2 LifecycleNode, enabling dynamic loading and unloading, thereby greatly decoupling development and usage. 
 
-Additionally, the framework provides a subjective evaluation tool for assessing calibration accuracy.
+In addition, To ensure efficiency and compatibility with the Horizon X5 RDK Infer API, all inference code is implemented in C++.
 
 <!-- PROJECT SHIELDS -->
 
@@ -20,28 +20,28 @@ Additionally, the framework provides a subjective evaluation tool for assessing 
 <br />
 
 <p align="center">
-  <a href="https://github.com/786739982/AirbotGrasp/">
+  <a href="https://github.com/786739982/ACT-Edge/">
     <img src="assets/logo.png" alt="Logo" width="146" height="64">
   </a>
 
-  <h3 align="center">AirbotGrasp</h3>
+  <h3 align="center">ACT-Edge</h3>
   <p align="center">
     A Customizable, Automated Grasping Framework！
     <br />
-    <a href="https://github.com/786739982/AirbotGrasp"><strong>Explore the documentation of this project »</strong></a>
+    <a href="https://github.com/786739982/ACT-Edge"><strong>Explore the documentation of this project »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/786739982/AirbotGrasp">Demo</a>
+    <a href="https://github.com/786739982/ACT-Edge">Demo</a>
     ·
-    <a href="https://github.com/786739982/AirbotGrasp/issues">Report Bug</a>
+    <a href="https://github.com/786739982/ACT-Edge/issues">Report Bug</a>
     ·
-    <a href="https://github.com/786739982/AirbotGrasp/issues">Propose New Feature</a>
+    <a href="https://github.com/786739982/ACT-Edge/issues">Propose New Feature</a>
   </p>
 
 </p>
 
 <p align="center">
-<img src="assets/airbotgrasp.gif", width="300"/>
+<img src="assets/ACT-Edge.gif", width="300"/>
 </p>
 
 ## 目录
@@ -76,8 +76,8 @@ Additionally, the framework provides a subjective evaluation tool for assessing 
 
 Get the code.
 ```bash
-git clone https://github.com/786739982/AirbotGrasp
-cd AirbotGrasp/GraspNet
+git clone https://github.com/786739982/ACT-Edge
+cd ACT-Edge/GraspNet
 ```
 Install packages via Pip.
 ```bash
@@ -107,7 +107,7 @@ Hardware
 * Realsense D435i
 * AirbotPlay v2.8,3
 
-通过手眼标定获得相机相对于机械臂末端的旋转矩阵，并替换 ```AirbotGrasper.py``` 中的代码：
+通过手眼标定获得相机相对于机械臂末端的旋转矩阵，并替换 ```ACT-Edgeer.py``` 中的代码：
 ```
   Tmat_end2cam = np.array([
             [0.01679974372021955, -0.3417827195107749, 0.9396288316429802, -0.1205800830169818],
@@ -139,7 +139,7 @@ Run the Pipeline.
 ```
 
 #### Set the matrix of the camera relative to the robotic arm end-effector.
-通过手眼标定获得相机相对于机械臂末端的旋转矩阵，并替换 ```AirbotGrasper.py``` 中的代码：
+通过手眼标定获得相机相对于机械臂末端的旋转矩阵，并替换 ```ACT-Edgeer.py``` 中的代码：
 ```
   Tmat_end2cam = np.array([
             [0.01679974372021955, -0.3417827195107749, 0.9396288316429802, -0.1205800830169818],
@@ -150,7 +150,7 @@ Run the Pipeline.
 ```
 
 #### Integrate Your Own Robotic Arm
-添加新的机械臂，并修改 ```AirbotGrasper.py``` 中的代码：
+添加新的机械臂，并修改 ```ACT-Edgeer.py``` 中的代码：
 ```
   # You can use your own robot
   self.bot = airbot.create_agent("down", "can0", 1.0, "gripper", 'OD', 'DM') 
@@ -176,8 +176,8 @@ eg:
 filetree 
 ├── AirbotAccuracy.py  # 主观法到位精度测试
 ├── AirbotCollect.py  # 重力补偿模式下的点云数据采集
-├── AirbotGrasper.py  # 抓取全流程
-├── AirbotGraspNet.py  # 测试GraspNet模型
+├── ACT-Edgeer.py  # 抓取全流程
+├── ACT-EdgeNet.py  # 测试GraspNet模型
 ├── AirbotInterface.py  # UI交互界面以及视觉框架接口
 ├── AirbotSegment.py  # 分割算法接口
 ├── AirbotTipVerify.py  # 末端到位精度验证
@@ -208,7 +208,7 @@ vx：Hong_Rui_0226
   
 ### 版权说明
 
-该项目签署了MIT 授权许可，详情请参阅 [LICENSE.txt](https://github.com/786739982/AirbotGrasp/blob/master/LICENSE.txt)
+该项目签署了MIT 授权许可，详情请参阅 [LICENSE.txt](https://github.com/786739982/ACT-Edge/blob/master/LICENSE.txt)
 
 
 
@@ -222,16 +222,16 @@ vx：Hong_Rui_0226
 
 
 <!-- links -->
-[contributors-shield]: https://img.shields.io/github/contributors/786739982/AirbotGrasp.svg?style=flat-square
-[contributors-url]: https://github.com/786739982/AirbotGrasp/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/786739982/AirbotGrasp.svg?style=flat-square
-[forks-url]: https://github.com/786739982/AirbotGrasp/network/members
-[stars-shield]: https://img.shields.io/github/stars/786739982/AirbotGrasp.svg?style=flat-square
-[stars-url]: https://github.com/786739982/AirbotGrasp/stargazers
-[issues-shield]: https://img.shields.io/github/issues/786739982/AirbotGrasp.svg?style=flat-square
-[issues-url]: https://img.shields.io/github/issues/786739982/AirbotGrasp.svg
-[license-shield]: https://img.shields.io/github/license/786739982/AirbotGrasp.svg?style=flat-square
-[license-url]: https://github.com/786739982/AirbotGrasp/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/786739982/ACT-Edge.svg?style=flat-square
+[contributors-url]: https://github.com/786739982/ACT-Edge/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/786739982/ACT-Edge.svg?style=flat-square
+[forks-url]: https://github.com/786739982/ACT-Edge/network/members
+[stars-shield]: https://img.shields.io/github/stars/786739982/ACT-Edge.svg?style=flat-square
+[stars-url]: https://github.com/786739982/ACT-Edge/stargazers
+[issues-shield]: https://img.shields.io/github/issues/786739982/ACT-Edge.svg?style=flat-square
+[issues-url]: https://img.shields.io/github/issues/786739982/ACT-Edge.svg
+[license-shield]: https://img.shields.io/github/license/786739982/ACT-Edge.svg?style=flat-square
+[license-url]: https://github.com/786739982/ACT-Edge/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 
 
