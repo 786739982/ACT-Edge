@@ -26,7 +26,7 @@ In addition, To ensure efficiency and compatibility with the Horizon X5 RDK Infe
 
   <h3 align="center">ACT-Edge</h3>
   <p align="center">
-    A Customizable, Automated Grasping Framework！
+    Deploy the Embodied AI onto Edge Devices ！
     <br />
     <a href="https://github.com/786739982/ACT-Edge"><strong>Explore the documentation of this project »</strong></a>
     <br />
@@ -41,21 +41,17 @@ In addition, To ensure efficiency and compatibility with the Horizon X5 RDK Infe
 </p>
 
 <p align="center">
-<img src="assets/ACT-Edge.gif", width="300"/>
+<img src="assets/ACT-Edge.gif", width=""/>
 </p>
 
 ## 目录
 
 - [Getting-Started](#Getting-Started)
   - [Requirements](#Requirements)
-  - [Installation](#Installation)
   - [Deployment](#Deployment)
 - [Customization-Guide](#Customization-Guide)
-  - Add a New Vision Algorithm
-  - Set the matrix of the camera relative to the robotic arm end-effector.
   - Integrate Your Own Robotic Arm
-  - Integrate Your Own RGBD-Camera
-- [Directory-Structure](#Directory-Structure)
+  - Integrate Your Own Cameras
 - [Author](#Author)
 - [Acknowledgements](#Acknowledgements)
 
@@ -66,128 +62,70 @@ In addition, To ensure efficiency and compatibility with the Horizon X5 RDK Infe
 
 #### Requirements
 
-1. Python 3
-2. PyTorch 2.6
-3. CUDA 12.8
-4. Open3d >=0.8
-5. TensorBoard 2.3
-
-#### **Installation**
-
-Get the code.
-```bash
-git clone https://github.com/786739982/ACT-Edge
-cd ACT-Edge/GraspNet
-```
-Install packages via Pip.
-```bash
-pip install -r requirements.txt
-```
-Compile and install pointnet2 operators (code adapted from [votenet](https://github.com/facebookresearch/votenet)).
-```bash
-cd pointnet2
-python setup.py install
-```
-Compile and install knn operator (code adapted from [pytorch_knn_cuda](https://github.com/chrischoy/pytorch_knn_cuda)).
-```bash
-cd knn
-python setup.py install
-```
-Install graspnetAPI for evaluation.
-```bash
-git clone https://github.com/graspnet/graspnetAPI.git
-cd graspnetAPI
-pip install .
-```
+1. [ROS2](https://docs.ros.org/en/rolling/index.html)
+2. [Hobot DNN](https://developer.d-robotics.cc/rdk_doc/04_toolchain_development)
 
 #### Deployment
 
 Hardware
 
-* Realsense D435i
-* AirbotPlay v2.8,3
+* USB Cameras
+* AirbotPlay
+* Horizon X5 RDK
 
-通过手眼标定获得相机相对于机械臂末端的旋转矩阵，并替换 ```ACT-Edgeer.py``` 中的代码：
+Compile and Run
 ```
-  Tmat_end2cam = np.array([
-            [0.01679974372021955, -0.3417827195107749, 0.9396288316429802, -0.1205800830169818],
-            [-0.9988576340892403, -0.04778282400951217, 0.0004780703983183782, 0.003676703639963586],
-            [0.04473472289580515, -0.9385634631571248, -0.3421950177807104, 0.1103012524056419], 
-            [0,         0,        0,             1]
-        ])
+  # Compile
+  cp ACT-Edge /your/ROS2_ws/src
+  colcon build
+
+  # Run
+  # First setup your own Robotic Arm ROS2 Node，and then ...
+  source /your/ROS2_ws/install/setup.bash
+  ros2 run act_edge_pkg act_infer_app
+
+  # Optional
+  ros2 param set /act_infer_app namespace "your_namespace"
+  
+  # Activate lifecycle node
+  ros2 lifecycle set /act_infer_app configure
+  ros2 lifecycle set /act_infer_app activate
+
+  # Deactivate lifecycle node
+  ros2 lifecycle set /act_infer_app deactivate
+  ros2 lifecycle set /act_infer_app cleanup
+
 ```
 
-Run the Pipeline.
-```
-  python3 Pipeline.py
-```
-
-
-
+Get Quantized and Compiled Model
+* One way: Refer to [Hobot DNN](https://developer.d-robotics.cc/rdk_doc/04_toolchain_development)
+* Recommended way: Contact me for direct guidance, code and shell scripts. [My contact information](#Author).
 
 ### Customization-Guide
 
-#### Add a New Vision Algorithm
-添加新的视觉算法类似于 ```AirbotSegment.py``` ，并修改 ```AirbotInterface.py``` 中的代码：
-```
-  def init_predictor(self):
-        if self.type_predictor == 'SAM':
-            Predictor = AirbotSegment()
-            self.predictor = Predictor.get_model()
-        elif self.type_predictor == 'Yolo-World': # You can use your own predictor model
-            pass
-```
+Since this project is implemented as a ROS 2 lifecycle node, you only need to implement your robotic arm and camera as ROS 2 nodes, and declare publishers and subscriptions to input raw data and receive inference results. 
 
-#### Set the matrix of the camera relative to the robotic arm end-effector.
-通过手眼标定获得相机相对于机械臂末端的旋转矩阵，并替换 ```ACT-Edgeer.py``` 中的代码：
-```
-  Tmat_end2cam = np.array([
-            [0.01679974372021955, -0.3417827195107749, 0.9396288316429802, -0.1205800830169818],
-            [-0.9988576340892403, -0.04778282400951217, 0.0004780703983183782, 0.003676703639963586],
-            [0.04473472289580515, -0.9385634631571248, -0.3421950177807104, 0.1103012524056419], 
-            [0,         0,        0,             1]
-        ])
-```
+So you can modify the corresponding publishers and subscriptions in this project to match your application.
 
 #### Integrate Your Own Robotic Arm
-添加新的机械臂，并修改 ```ACT-Edgeer.py``` 中的代码：
+```src/act_infer_app.cpp```
 ```
-  # You can use your own robot
-  self.bot = airbot.create_agent("down", "can0", 1.0, "gripper", 'OD', 'DM') 
-```
-
-#### Integrate Your Own RGBD-Camera
-
-```
-  def get_image_and_depth(self):
-      '''
-          Read color and depth image from stream.
-          Depth is align to color image.
-      '''
-      pass
+  joint_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>(
+        fmt::format("/{}/joint_states", namespace_), 10, std::bind(&Act_Infer_APP::joints_callback, this, std::placeholders::_1));
+    
+  joint_publisher_ = this->create_publisher<sensor_msgs::msg::JointState>(fmt::format("/{}/servo_node/joint_pos_cmds", namespace_), 10);
+  
+  gripper_publisher_ = this->create_publisher<airbot_controller_msgs::msg::GripperControl>(fmt::format("/{}/gripper_control", namespace_), 10);
 ```
 
-
-
-### Directory-Structure
-eg:
-
+#### Integrate Your Own Cameras
+```src/act_infer_app.cpp```
 ```
-filetree 
-├── AirbotAccuracy.py  # 主观法到位精度测试
-├── AirbotCollect.py  # 重力补偿模式下的点云数据采集
-├── ACT-Edgeer.py  # 抓取全流程
-├── ACT-EdgeNet.py  # 测试GraspNet模型
-├── AirbotInterface.py  # UI交互界面以及视觉框架接口
-├── AirbotSegment.py  # 分割算法接口
-├── AirbotTipVerify.py  # 末端到位精度验证
-├── AirbotUtils  # 工具类
-├── GraspNet  # 适配 PyTorch 2.0 and later versions.
-├── images  # Logo Images
-├── Pipeline.py  # main pipeline
-├── README.md  # README.md
-└── yolo_sam.py  # YoloWorld + SAM
+  cam1_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
+        "/camera/usbcam1/color/image_bgr8", 10, callback_1);
 
+  cam2_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
+        "/camera/usbcam2/color/image_bgr8", 10, callback_2);
 ```
 
 
@@ -208,7 +146,7 @@ vx：Hong_Rui_0226
   
 ### 版权说明
 
-该项目签署了MIT 授权许可，详情请参阅 [LICENSE.txt](https://github.com/786739982/ACT-Edge/blob/master/LICENSE.txt)
+该项目签署了MIT 授权许可，详情请参阅 [LICENSE](https://github.com/786739982/ACT-Edge/blob/master/LICENSE)
 
 
 
