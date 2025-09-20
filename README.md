@@ -99,7 +99,10 @@ Compile and Run
 
 Get Quantized and Compiled Model
 * One way: Refer to [Hobot DNN](https://developer.d-robotics.cc/rdk_doc/04_toolchain_development)
-* Recommended way: Contact me for direct guidance, code and shell scripts. [My contact information](#Author).
+* Recommended way: Contact me for direct guidance, code and shell scripts. [My contact information](#Author). I also look forward to becoming friends with you!
+
+
+
 
 ### Customization-Guide
 
