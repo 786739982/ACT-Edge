@@ -58,20 +58,24 @@ In addition, To ensure efficiency and compatibility with the Horizon X5 RDK Infe
 
 
 
-### Getting-Started
+## Getting-Started
 
-#### Requirements
+### Requirements
 
 1. [ROS2](https://docs.ros.org/en/rolling/index.html)
 2. [Hobot DNN](https://developer.d-robotics.cc/rdk_doc/04_toolchain_development)
 
-#### Deployment
+### Deployment
 
 Hardware
 
 * USB Cameras
 * AirbotPlay
 * Horizon X5 RDK
+
+Get Quantized and Compiled Model Weights
+* One way: Refer to [Hobot DNN](https://developer.d-robotics.cc/rdk_doc/04_toolchain_development)
+* Recommended way: Contact me for direct guidance, code and shell scripts. [My contact information](#Author). I also look forward to becoming friends with you!
 
 Compile and Run
 ```
@@ -97,20 +101,16 @@ Compile and Run
 
 ```
 
-Get Quantized and Compiled Model
-* One way: Refer to [Hobot DNN](https://developer.d-robotics.cc/rdk_doc/04_toolchain_development)
-* Recommended way: Contact me for direct guidance, code and shell scripts. [My contact information](#Author). I also look forward to becoming friends with you!
 
 
 
-
-### Customization-Guide
+## Customization-Guide
 
 Since this project is implemented as a ROS 2 lifecycle node, you only need to implement your robotic arm and camera as ROS 2 nodes, and declare publishers and subscriptions to input raw data and receive inference results. 
 
 So you can modify the corresponding publishers and subscriptions in this project to match your application.
 
-#### Integrate Your Own Robotic Arm
+### Integrate Your Own Robotic Arm
 ```src/act_infer_app.cpp```
 ```
   joint_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>(
@@ -121,7 +121,7 @@ So you can modify the corresponding publishers and subscriptions in this project
   gripper_publisher_ = this->create_publisher<airbot_controller_msgs::msg::GripperControl>(fmt::format("/{}/gripper_control", namespace_), 10);
 ```
 
-#### Integrate Your Own Cameras
+### Integrate Your Own Cameras
 ```src/act_infer_app.cpp```
 ```
   cam1_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
@@ -131,10 +131,16 @@ So you can modify the corresponding publishers and subscriptions in this project
         "/camera/usbcam2/color/image_bgr8", 10, callback_2);
 ```
 
+### Integrate Your Own Bin Model Weights
+```src/act_infer_app.cpp```
+```
+  loadModel(std::string("/home/sunrise/act_config/act.bin"));
+```
 
 
 
-### Author
+
+## Author
 
 Hongrui Zhu 
 
@@ -147,7 +153,7 @@ vx：Hong_Rui_0226
 
 
   
-### 版权说明
+## 版权说明
 
 该项目签署了MIT 授权许可，详情请参阅 [LICENSE](https://github.com/786739982/ACT-Edge/blob/master/LICENSE)
 
@@ -155,7 +161,7 @@ vx：Hong_Rui_0226
 
 
 
-### Acknowledgements
+## Acknowledgements
 
 - [DISCOVERSE](https://airbots.online/)
 
